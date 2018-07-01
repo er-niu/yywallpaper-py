@@ -1,0 +1,64 @@
+# -*- coding:utf-8 -*-
+import os
+import sys
+import time
+
+import dao
+import picture_util
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+# path = "D:/picture/彼岸壁纸/"
+path = "/Users/songxiao/Pictures/壁纸/"
+# upath = unicode(path, 'utf-8')
+
+dirs = os.listdir(path)
+type_id = {'美女': '0', '风景': '1', '唯美': '2', '动漫': '3', '游戏': '4', '人物': '5',
+           '动物': '6', '花卉': '7', '节日': '8', '可爱': '9', '汽车': '10', '日历': '11',
+           '设计': '12', '影视': '13', '游戏': '14'}
+for type_name in dirs:
+    # name = type_name.encode("utf-8")
+    if '.DS_Store' == type_name:
+        continue
+
+    type = type_id[type_name]
+    type_path = path + type_name + '/'
+    all_pic = os.listdir(type_path)
+    for dr in all_pic:
+        title = dr.split('.')[0]
+        #print(dr)
+        count = dao.check_picture(title)
+        print(count)
+        if count >= 1:
+            print('picture has been exist:%s' % title)
+            continue
+
+        pic_desc = title
+        pic_type = type
+        pic_path = type_path + dr
+        if '.DS_Store' == dr:
+            continue
+
+        # 如果是文件夹则跳过
+        if os.path.isdir(pic_path):
+            continue
+
+        url = dao.upload_picture(pic_path)
+        if url == 'error':
+            print('failed to insert picture')
+            continue
+
+        # 判断缩略图是否存在，不存在生成
+        small_pic_path = type_path + 'small/' + dr
+        if os.path.exists(small_pic_path) is False:
+            picture_util.small_pic(type_path, dr)
+
+        small_url = dao.upload_picture(small_pic_path)
+        if small_url == 'error':
+            continue
+
+        # 图片信息入库
+        create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        dao.insert_picture(title, pic_desc, url, small_url, 1920, 1080, 0, pic_type, create_time)
+        print('success to insert picture:%s' % title)
+        # title = dr.encode("utf-8")
