@@ -6,6 +6,9 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from conf import read_conf
 from service import scan_upload_day, scan_pic_day
 import logging
+import sys
+sys.path.append('/usr/local/src/yywallpaper-py')
+
 
 logging.basicConfig()
 
