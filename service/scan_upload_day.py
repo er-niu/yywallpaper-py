@@ -3,9 +3,9 @@ import os
 import sys
 import time
 
-import dao
 import picture_util
 from conf import read_conf
+from dao import picture_dao
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -25,7 +25,13 @@ def upload_pic(date):
         if '.DS_Store' == type_name:
             continue
 
-        type = type_id[type_name]
+        try:
+            type = type_id[type_name]
+        except Exception as err:
+            print('type_name:%s', type_name, str(err))
+            continue
+
+        # type = type_id[type_name]
         type_path = path + type_name + '/' + date + '/'
 
         print(type_path)
@@ -35,7 +41,7 @@ def upload_pic(date):
         all_pic = os.listdir(type_path)
         for dr in all_pic:
             title = dr.split('.')[0]
-            count = dao.check_picture(title)
+            count = picture_dao.check_picture(title)
             if count >= 1:
                 print('picture has been exist:%s' % title)
                 continue
@@ -51,7 +57,7 @@ def upload_pic(date):
             if os.path.isdir(pic_path):
                 continue
 
-            url = dao.upload_picture(pic_path)
+            url = picture_dao.upload_picture(pic_path)
             if url == 'error':
                 print('failed to insert picture')
                 continue
@@ -60,13 +66,13 @@ def upload_pic(date):
             if os.path.exists(small_pic_path) is False:
                 picture_util.small_pic(type_path, dr)
 
-            small_url = dao.upload_picture(small_pic_path)
+            small_url = picture_dao.upload_picture(small_pic_path)
             if small_url == 'error':
                 print('failed to insert picture')
                 continue
 
             # 图片信息入库
             create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            dao.insert_picture(title, pic_desc, url, small_url, 1920, 1080, 0, pic_type, create_time)
+            picture_dao.insert_picture(title, pic_desc, url, small_url, 1920, 1080, 0, pic_type, create_time)
             print('success to insert picture:%s' % title)
             # title = dr.encode("utf-8")
