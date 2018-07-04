@@ -3,6 +3,7 @@
 import ConfigParser
 
 conf = ConfigParser.SafeConfigParser()
+print '################### read system.cfg'
 conf.read("../system.cfg")
 
 
