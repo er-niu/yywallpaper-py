@@ -1,0 +1,2 @@
+include *.cfg
+recursive-include examples *.cfg *.py *.txt

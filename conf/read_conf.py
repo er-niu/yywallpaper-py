@@ -3,7 +3,7 @@
 import ConfigParser
 
 conf = ConfigParser.SafeConfigParser()
-conf.read("../conf/system.cfg")
+conf.read("../system.cfg")
 
 
 def get_conf(section, key):
