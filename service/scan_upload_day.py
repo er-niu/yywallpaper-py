@@ -19,7 +19,7 @@ def upload_pic(date):
     dirs = os.listdir(path)
     type_id = {'美女': '0', '风景': '1', '唯美': '2', '动漫': '3', '游戏': '4', '人物': '5',
                '动物': '6', '花卉': '7', '节日': '8', '可爱': '9', '汽车': '10', '日历': '11',
-               '设计': '12', '影视': '13', '游戏': '14'}
+               '设计': '12', '影视': '13', '游戏': '14', '王者荣耀': '15', '鬼刀': '16'}
     for type_name in dirs:
         # name = type_name.encode("utf-8")
         if '.DS_Store' == type_name:
@@ -27,8 +27,8 @@ def upload_pic(date):
 
         try:
             type = type_id[type_name]
-        except Exception as err:
-            print('type_name:%s', type_name, str(err))
+        except:
+            print('failed to get type_name:%s', type_name)
             continue
 
         # type = type_id[type_name]
