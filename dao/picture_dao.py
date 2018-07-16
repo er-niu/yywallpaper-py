@@ -25,10 +25,13 @@ def insert_picture(title, pic_desc, big_url, small_url, length, width, like_num,
           (title, pic_desc, big_url, small_url, length, width, like_num, pic_type, create_time)
     try:
         # 执行sql语句
+        connection.ping(reconnect=True)
+        print('excute sql:' + sql)
         cursor.execute(sql)
         # 向数据库提交
         connection.commit()
-    except:
+    except Exception, err:
+        print('failed to insert picture:%s' % err)
         # 发生错误时回滚
         connection.rollback()
 
@@ -40,12 +43,15 @@ def check_picture(title):
     sql = "SELECT COUNT(*) FROM picture_item WHERE title = '%s'" % (title)
     try:
         # 执行sql语句
+        print('excute sql========:' + sql)
+        connection.ping(reconnect=True)
         cursor.execute(sql)
         # 使用 fetchone() 方法获取单条数据.
         data = cursor.fetchone()
         print('find the same picture:%s' % data['COUNT(*)'])
         return data['COUNT(*)']
-    except:
+    except Exception, err:
+        print('failed to check picture:%s' % err)
         # 发生错误时回滚
         connection.rollback()
 
@@ -61,5 +67,5 @@ def upload_picture(path):
         url = read_conf.get_conf('sys', 'address') + ret['Remote file_id']
         return url
     except Exception, err:
-        print('failed to upload picture:%s' % path,err)
+        print('failed to upload picture:%s' % path, err)
         return 'error'

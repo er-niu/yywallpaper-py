@@ -76,4 +76,5 @@ def upload_pic(date):
             create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             picture_dao.insert_picture(title, pic_desc, url, small_url, 1920, 1080, 0, pic_type, create_time)
             print('success to insert picture:%s' % title)
+            picture_dao.dis_connect()
             # title = dr.encode("utf-8")
