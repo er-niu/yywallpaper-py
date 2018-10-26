@@ -1,18 +1,14 @@
 # -*- coding:utf-8 -*-
-
-# 目标：下载各目录的壁纸（大图）
 import time
 import urllib2
-
 from conf import read_conf
-
-__author__ = 'CQC'
-
 import re
 import os
 import socket
 import random
 import sys
+
+
 reload(sys)
 sys.setdefaultencoding('gbk')
 socket.setdefaulttimeout(30)  # 设置socket层的超时时间为20秒

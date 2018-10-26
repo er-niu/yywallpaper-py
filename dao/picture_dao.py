@@ -1,5 +1,4 @@
 # encoding=utf-8
-
 import pymysql.cursors
 from fdfs_client.client import *
 
@@ -20,7 +19,7 @@ client = Fdfs_client(read_conf.get_conf('fastdfs', 'client_path'))
 def insert_picture(title, pic_desc, big_url, small_url, length, width, like_num, pic_type, create_time):
     # 使用cursor()方法获取操作游标
     cursor = connection.cursor()
-    sql = "INSERT INTO picture_item(title,pic_desc,big_url,small_url,length,width,like_num,pic_type,create_time) \
+    sql = "INSERT INTO t_picture_item(title,pic_desc,big_url,small_url,length,width,like_num,pic_type,create_time) \
            VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )" % \
           (title, pic_desc, big_url, small_url, length, width, like_num, pic_type, create_time)
     try:
@@ -28,19 +27,21 @@ def insert_picture(title, pic_desc, big_url, small_url, length, width, like_num,
         connection.ping(reconnect=True)
         print('excute sql:' + sql)
         cursor.execute(sql)
+        id = int(connection.insert_id())
         # 向数据库提交
         connection.commit()
+        return id
     except Exception, err:
         print('failed to insert picture:%s' % err)
         # 发生错误时回滚
         connection.rollback()
 
 
-# 保存图片
+# check 图片是否已经入库
 def check_picture(title):
     # 使用cursor()方法获取操作游标
     cursor = connection.cursor()
-    sql = "SELECT COUNT(*) FROM picture_item WHERE title = '%s'" % (title)
+    sql = "SELECT COUNT(*) FROM t_picture_item WHERE title = '%s'" % (title)
     try:
         # 执行sql语句
         print('excute sql========:' + sql)
@@ -69,3 +70,25 @@ def upload_picture(path):
     except Exception, err:
         print('failed to upload picture:%s' % path, err)
         return 'error'
+
+
+def update_picture(big_url, small_url, pic_id):
+    # 使用cursor()方法获取操作游标
+    cursor = connection.cursor()
+    # SQL 更新语句
+    sql = "UPDATE t_picture_item SET big_url = '%s',small_url = '%s' WHERE id = '%s'" % (big_url, small_url, pic_id)
+
+    print(sql)
+    try:
+        connection.ping(reconnect=True)
+        # 执行SQL语句
+        cursor.execute(sql)
+        # 提交到数据库执行
+        connection.commit()
+    except Exception, err:
+        print('failed to update picture:%s' % err)
+        # 发生错误时回滚
+        connection.rollback()
+
+    # 关闭数据库连接
+    connection.close()

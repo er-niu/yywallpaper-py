@@ -6,6 +6,8 @@ import time
 import picture_util
 from conf import read_conf
 from dao import picture_dao
+from dao.picture_dao import update_picture
+from dao.upload_cos import upload_cos
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -40,41 +42,44 @@ def upload_pic(date):
             continue
 
         all_pic = os.listdir(type_path)
-        for dr in all_pic:
-            title = dr.split('.')[0]
-            count = picture_dao.check_picture(title)
-            if count >= 1:
-                print('picture has been exist:%s' % title)
-                continue
-
+        for file_name in all_pic:
+            title = file_name.split('.')[0]
             pic_desc = title
             pic_type = type
-            pic_path = type_path + dr
-
-            if '.DS_Store' == dr:
+            pic_path = type_path + file_name
+            if '.DS_Store' == file_name:
                 continue
 
             # 如果是文件夹则跳过
             if os.path.isdir(pic_path):
                 continue
 
-            url = picture_dao.upload_picture(pic_path)
-            if url == 'error':
-                print('failed to insert picture')
-                continue
-            # 判断缩略图是否存在，不存在生成
-            small_pic_path = type_path + 'small/' + dr
-            if os.path.exists(small_pic_path) is False:
-                picture_util.small_pic(type_path, dr)
-
-            small_url = picture_dao.upload_picture(small_pic_path)
-            if small_url == 'error':
-                print('failed to insert picture')
+            count = picture_dao.check_picture(title)
+            if count >= 1:
+                print('picture has been exist:%s' % title)
                 continue
 
             # 图片信息入库
             create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            picture_dao.insert_picture(title, pic_desc, url, small_url, 1920, 1080, 0, pic_type, create_time)
-            print('success to insert picture:%s' % title)
-            picture_dao.dis_connect()
-            # title = dr.encode("utf-8")
+            t = os.path.getctime(pic_path)
+            create_time = picture_util.TimeStampToTime(t)
+            pic_id = picture_dao.insert_picture(title, pic_desc, "", "", 1920, 1080, 0, pic_type, create_time)
+            print('success to insert picture id:%s title： %s', pic_id, title)
+
+            # 上传原图到cos
+            url = upload_cos(type_path, file_name, pic_id)
+            if url == 'error':
+                print('failed to upload_cos big picture')
+                continue
+
+            # 判断缩略图是否存在，不存在生成
+            small_pic_path = type_path + 'small/' + file_name
+            if os.path.exists(small_pic_path) is False:
+                picture_util.small_pic(type_path, file_name)
+
+            small_url = upload_cos(type_path + 'small/', file_name, 'small/' + str(pic_id))
+            if small_url == 'error':
+                print('failed to upload_cos small picture')
+                continue
+            # 更新db图片的url
+            update_picture(url, small_url, str(pic_id))
