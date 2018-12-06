@@ -11,6 +11,6 @@ def TimeStampToTime(timestamp):
     return time.strftime('%Y-%m-%d %H:%M:%S', timeStruct)
 
 if __name__ == '__main__':
-    pic_path = "/Users/songxiao/Pictures/wallpaper/dongman/《你的名字 》立花泷 宫水三叶桌面壁纸.jpg"
-    t = os.path.getctime(pic_path)
-    print(TimeStampToTime(t))
+    pic_path = "/Users/songxiao/Pictures/wallpaper/test/"
+    pic_name = "111.jpg"
+    img_zip(pic_path, pic_name)

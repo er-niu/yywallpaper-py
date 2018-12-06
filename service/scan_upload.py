@@ -29,11 +29,14 @@ for type_name in dirs:
     if '.DS_Store' == type_name:
         continue
 
+    if 'meinv' != type_name:
+        continue
+
     type = type_id[type_name]
     type_path = path + type_name + '/'
     all_pic = os.listdir(type_path)
 
-    print(all_pic)
+    # print(all_pic)
 
     for file_name in all_pic:
         title = file_name.split('.')[0]
@@ -69,7 +72,7 @@ for type_name in dirs:
         # 判断缩略图是否存在，不存在生成
         small_pic_path = type_path + 'small/' + file_name
         if os.path.exists(small_pic_path) is False:
-            picture_util.small_pic(type_path, file_name)
+            picture_util.img_zip(type_path, file_name)
 
         small_url = upload_cos(type_path + 'small/', file_name, 'small/' + str(pic_id))
         if small_url == 'error':

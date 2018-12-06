@@ -10,7 +10,7 @@ def small_pic(path, name):
         os.makedirs(small_path)
     try:
         img = Image.open(path + name)
-        img = img.resize((300, 200), Image.ANTIALIAS)
+        img = img.resize((450, 300), Image.ANTIALIAS)
         img.save(small_path + name)
     except:
         print('failed to read img file,' + small_path + name)
@@ -23,7 +23,7 @@ def img_zip(path, name):
 
     try:
         imageBig = cv2.imread(path + name)
-        res = cv2.resize(imageBig, (300, 200), interpolation=cv2.INTER_AREA)
+        res = cv2.resize(imageBig, (450, 300), interpolation=cv2.INTER_AREA)
         cv2.imwrite(path + small_name, res)
     except:
         print('failed to read img file,' + path + small_name)

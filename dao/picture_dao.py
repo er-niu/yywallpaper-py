@@ -12,7 +12,7 @@ connection = pymysql.connect(host=read_conf.get_conf('mysql', 'host'),
                              cursorclass=pymysql.cursors.DictCursor)
 
 # client = Fdfs_client('D:\Program Files\Python2.7\client.conf')
-client = Fdfs_client(read_conf.get_conf('fastdfs', 'client_path'))
+# client = Fdfs_client(read_conf.get_conf('fastdfs', 'client_path'))
 
 
 # 保存图片
@@ -61,15 +61,15 @@ def dis_connect():
     connection.close()
 
 
-def upload_picture(path):
-    try:
-        ret = client.upload_by_filename(path)
-        # http://yywallpaper.top/group1/M00/00/00/rBsABVs0Vs-AJcmtAAA_pvGSS9o605.jpg
-        url = read_conf.get_conf('sys', 'address') + ret['Remote file_id']
-        return url
-    except Exception, err:
-        print('failed to upload picture:%s' % path, err)
-        return 'error'
+# def upload_picture(path):
+#     try:
+#         ret = client.upload_by_filename(path)
+#         # http://yywallpaper.top/group1/M00/00/00/rBsABVs0Vs-AJcmtAAA_pvGSS9o605.jpg
+#         url = read_conf.get_conf('sys', 'address') + ret['Remote file_id']
+#         return url
+#     except Exception, err:
+#         print('failed to upload picture:%s' % path, err)
+#         return 'error'
 
 
 def update_picture(big_url, small_url, pic_id):
