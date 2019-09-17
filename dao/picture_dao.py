@@ -5,6 +5,7 @@ from fdfs_client.client import *
 from conf import read_conf
 
 connection = pymysql.connect(host=read_conf.get_conf('mysql', 'host'),
+                             port=int(read_conf.get_conf('mysql', 'port')),
                              user=read_conf.get_conf('mysql', 'user'),
                              password=read_conf.get_conf('mysql', 'password'),
                              db=read_conf.get_conf('mysql', 'db'),
@@ -35,7 +36,7 @@ def insert_picture(title, pic_desc, big_url, small_url, length, width, like_num,
         print('failed to insert picture:%s' % err)
         # 发生错误时回滚
         connection.rollback()
-
+    connection.close()
 
 # check 图片是否已经入库
 def check_picture(title):
@@ -55,7 +56,7 @@ def check_picture(title):
         print('failed to check picture:%s' % err)
         # 发生错误时回滚
         connection.rollback()
-
+    connection.close()
 
 def dis_connect():
     connection.close()

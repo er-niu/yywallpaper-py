@@ -24,6 +24,7 @@ def upload_pic(date):
                '设计': '12', '影视': '13', '军事': '14', '王者荣耀': '15', '鬼刀': '16',
                '护眼': '17', '体育': '18', '其他': '19', '建筑': '20', '美食': '21', '水果': '22'}
 
+
     for type_name in dirs:
         # name = type_name.encode("utf-8")
         if '.DS_Store' == type_name:

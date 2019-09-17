@@ -105,11 +105,13 @@ def scan_pic_page(menu_link_new, path, big_title, date):
                 continue
             middle_response = middle_response.decode('gbk')  # python3
             res_code_son = re.search(pat_code_son, middle_response)
+
             # 获得子目录链接，合成大图网页链接
             #pat_link_son = re.compile('<li><a href="(.*?)" title=".*?" target="_blank"><img', re.S)
-            pat_link_son = re.compile('<li><a href="(.*?)" title=".*?" target="_blank"><img.*?' + date + '</p>', re.S)
+            pat_link_son = re.compile('<li><a href="(.*?)" title=".*?'+date+'".*?', re.S)
 
             res_link = re.findall(pat_link_son, res_code_son.group(1))
+            #print(res_code_son.group(1))
             print res_link
             # print(big_title[j])
             for d_item in res_link:
@@ -162,7 +164,7 @@ def scan_pic_page(menu_link_new, path, big_title, date):
                         if not data:
                             print("download picture failed!")
 
-                time.sleep(random.randint(5, 20))  # 休眠随机时间
+                time.sleep(random.randint(5, 6))  # 休眠随机时间
         print('One menu download OK.')
-        time.sleep(random.randint(9, 30))  # 休眠随机时间
+        time.sleep(random.randint(5, 6))  # 休眠随机时间
         j += 1

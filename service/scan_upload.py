@@ -8,6 +8,8 @@ from conf import read_conf
 from dao import picture_dao
 from dao.picture_dao import update_picture
 from dao.upload_cos import upload_cos
+from concurrent.futures import ThreadPoolExecutor
+
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -24,20 +26,12 @@ type_id = {'meinv': '0', 'fengjing': '1', 'weimei': '2', 'dongman': '3', 'youxi'
            'dongwu': '6', 'huahui': '7', 'jieri': '8', 'keai': '9', 'qiche': '10', 'rili': '11',
            'sheji': '12', 'yingshi': '13', 'junshi': '14', 'wangzherongyao': '15', 'guidao': '16',
            'huyan': '17', 'tiyu': '18', 'qita': '19', 'jianzhu': '20', 'meishi': '21', 'shuiguo': '22'}
-for type_name in dirs:
-    # name = type_name.encode("utf-8")
-    if '.DS_Store' == type_name:
-        continue
 
-    if 'meinv' != type_name:
-        continue
 
-    type = type_id[type_name]
-    type_path = path + type_name + '/'
-    all_pic = os.listdir(type_path)
+# executor = ThreadPoolExecutor(max_workers=12)
 
-    # print(all_pic)
 
+def importPic(type, type_path, all_pic):
     for file_name in all_pic:
         title = file_name.split('.')[0]
         pic_desc = title
@@ -64,7 +58,7 @@ for type_name in dirs:
         print('success to insert picture id:%s title： %s', pic_id, title)
 
         # 上传原图到cos
-        url = upload_cos(type_path, file_name, pic_id)
+        url = upload_cos(type_path, file_name, pic_id, pic_type)
         if url == 'error':
             print('failed to upload_cos big picture')
             continue
@@ -74,9 +68,26 @@ for type_name in dirs:
         if os.path.exists(small_pic_path) is False:
             picture_util.img_zip(type_path, file_name)
 
-        small_url = upload_cos(type_path + 'small/', file_name, 'small/' + str(pic_id))
+        small_url = upload_cos(type_path + 'small/', file_name, 'small/' + str(pic_id), pic_type)
         if small_url == 'error':
             print('failed to upload_cos small picture')
             continue
         # 更新db图片的url
         update_picture(url, small_url, str(pic_id))
+
+
+for type_name in dirs:
+    # name = type_name.encode("utf-8")
+    if '.DS_Store' == type_name:
+        continue
+
+    # if 'meinv' != type_name:
+    #     continue
+
+    type = type_id[type_name]
+    type_path = path + type_name + '/'
+    all_pic = os.listdir(type_path)
+
+    # print(all_pic)
+    importPic(type, type_path, all_pic)
+    # executor.submit(importPic, type, type_path, all_pic)

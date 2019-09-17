@@ -15,7 +15,13 @@ def my_job():
     # 定时任务
     # 1. 根据当前日期爬取最新图片，并保存到/分类/日期/ 文件夹 2016-07-23
     # 2. 读取文件夹图片，保存到fastfds和mysql
-    # date = '2018-07-27'
+    #date = '2018-11-16'
+    # dates = {"2019-08-08"}
+
+    # for date in dates:
+    #     scan_pic_day.scan_day_picture(date)
+    #     scan_upload_day.upload_pic(date)
+
     scan_pic_day.scan_day_picture(date)
     scan_upload_day.upload_pic(date)
 
