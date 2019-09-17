@@ -4,12 +4,12 @@ from fdfs_client.client import *
 
 from conf import read_conf
 
-connection = pymysql.connect(host=read_conf.get_conf('mysql', 'host'),
-                             port=int(read_conf.get_conf('mysql', 'port')),
-                             user=read_conf.get_conf('mysql', 'user'),
-                             password=read_conf.get_conf('mysql', 'password'),
-                             db=read_conf.get_conf('mysql', 'db'),
-                             charset=read_conf.get_conf('mysql', 'charset'),
+connection = pymysql.connect(host="118.24.51.89",
+                             port=3280,
+                             user="root",
+                             password="7ce1b875ec2f7ce0",
+                             db="yy_pic",
+                             charset="utf8mb4",
                              cursorclass=pymysql.cursors.DictCursor)
 
 # client = Fdfs_client('D:\Program Files\Python2.7\client.conf')
